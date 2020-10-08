@@ -16,11 +16,9 @@ const call = (expectedCount) => {
     }
 }
 
-// TODO: Use Que? Then: For each history item consume an expectation
-
 const expectations = [
-    { "methodName": call(2) },
-    { "otherMethod": call(1) }
+    { "name": "methodName", "expectation": call(2), order: true, status: "" },
+    { "name": "otherMethod", "expectation": call(1), order: true, status: "" }
 ]
 
 const callHistory = [
@@ -29,12 +27,20 @@ const callHistory = [
     { name: "otherMethod", parameters: [] }
 ]
 
-Object.entries(callHistory).forEach(call => {
-    expectations[call[1].name].actualCount++   
-})
+do {
 
-console.log(expectations)
+    const current = callHistory.shift()
+    
+    Object.entries(expectations).forEach(expectation => {
+        if((expectation[1].name === current.name) && 
+            (expectation[1].status === "")) {
+            expectation[1].expectation.actualCount++
+        }
+    })  
 
+} while(callHistory.length > 0)
+
+console.log(expectations);
 
 
 
