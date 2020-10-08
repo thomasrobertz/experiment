@@ -16,15 +16,17 @@ const call = (expectedCount) => {
     }
 }
 
-const expectations = {
-    "methodName": call(2),
-    "otherMethod": call(1) 
-}
+// TODO: Use Que? Then: For each history item consume an expectation
+
+const expectations = [
+    { "methodName": call(2) },
+    { "otherMethod": call(1) }
+]
 
 const callHistory = [
     { name: "methodName", parameters: [] },
     { name: "methodName", parameters: [] },
-    { name: "otherMethod", parameters: [] },    
+    { name: "otherMethod", parameters: [] }
 ]
 
 Object.entries(callHistory).forEach(call => {
