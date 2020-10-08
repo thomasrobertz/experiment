@@ -40,6 +40,13 @@ do {
 
 } while(callHistory.length > 0)
 
+Object.entries(expectations).forEach(expectation => {
+    if(expectation[1].expectation.actualCount === 
+        expectation[1].expectation.expectedCount) {
+        expectation[1].status = 'passed'
+    }
+})  
+
 console.log(expectations);
 
 
