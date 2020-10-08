@@ -3,16 +3,16 @@ const grammar = require("./dsl/grammar.js")
 const parser = new nearley.Parser(
     nearley.Grammar.fromCompiled(grammar))
 
-console.log(parser.feed(">3 and <8").results)
+//console.log(parser.feed(">3 and <8").results)
 
-const call = (howMany) => {
-    if(howMany === undefined) {
+const call = (expectedCount) => {
+    if(expectedCount === undefined) {
         throw new Error("Number of expected calls must be specified.")
     }
     return {
         "operation": "Call",
-        "howMany": howMany,
-        "count": 0
+        "expectedCount": expectedCount,
+        "actualCount": 0
     }
 }
 
@@ -21,20 +21,19 @@ const expectations = {
     "otherMethod": call(1) 
 }
 
-const callHistory = {
-    methodName: [],
-    methodName: []
-}
+const callHistory = [
+    { name: "methodName", parameters: [] },
+    { name: "methodName", parameters: [] },
+    { name: "otherMethod", parameters: [] },    
+]
 
-//console.log(expect(call(2)));
-
-Object.entries(callHistory).forEach(([method, parameters]) => {
-    //console.log(method)
+Object.entries(callHistory).forEach(call => {
+    expectations[call[1].name].actualCount++   
 })
 
-Object.entries(expectations).forEach(([method, expectation]) => {
-    console.log(method, expectation)
-})
+console.log(expectations)
+
+
 
 
 
