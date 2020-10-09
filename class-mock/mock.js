@@ -17,8 +17,11 @@ const call = (expectedCount) => {
 }
 
 const expectations = [
-    { "name": "methodName", "expectation": call(2), order: true, status: "" },
-    { "name": "otherMethod", "expectation": call(1), order: true, status: "" }
+    { 
+        "name": "methodName", "expectation": call(1), status: "", next: {
+        "name": "methodName", "expectation": call(1), status: "", next: {
+        "name": "otherMethod", "expectation": call(1), status: "" } }
+    } 
 ]
 
 const callHistory = [
@@ -27,6 +30,11 @@ const callHistory = [
     { name: "otherMethod", parameters: [] }
 ]
 
+Object.entries(expectations).forEach(expectation => {
+    
+})
+
+/*
 do {
 
     const current = callHistory.shift()
@@ -46,6 +54,7 @@ Object.entries(expectations).forEach(expectation => {
         expectation[1].status = 'passed'
     }
 })  
+*/
 
 console.log(expectations);
 
