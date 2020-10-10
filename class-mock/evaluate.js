@@ -1,3 +1,5 @@
+require("./parameters")
+
 module.exports = class Evaluate {
    
     static FAILED = "failed"
@@ -6,7 +8,7 @@ module.exports = class Evaluate {
     constructor(expectations) {
         this.expectations = expectations.flatten()
         this.resultFilter = Evaluate.FAILED
-        this.failMessages = []
+		this.failMessages = []
     }
 
     failed() {
@@ -27,18 +29,19 @@ module.exports = class Evaluate {
        }) 
     }
 
-    static createReason(reason, expected, actual) {
+    static createReason(reason, expected, actual, additional = "") {		
         return {
             "reason": reason,
             "expected": expected,
-            "actual": actual
-        }
+			"actual": actual,
+			"additional": additional
+		}
     }
 
     filter() {
         return this.expectations.filter(e => {
             const countResult = e.expectedCount === e.actualCount
-            const parametersResult = this.arrayDiff(e.expectedParameters, e.actualParameters)            
+            const parametersResult = Parameters.diff(e.expectedParameters, e.actualParameters)            
             if (this.resultFilter === Evaluate.FAILED) {
                 if (!countResult) {
                     this.addMessage(e.name, "method", this.createReason("Counts do not equal", e.expectedCount, e.actualCount))
