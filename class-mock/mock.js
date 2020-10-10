@@ -114,7 +114,7 @@ class Expectations {
         return this
     }
 
-    flatten() {
+    flatten(disband = true) {
         const list = []
         this.expectations.forEach(e => {
             list.push(e)      
@@ -126,6 +126,9 @@ class Expectations {
                 next = next.next
             }
         })
+        if (disband) {
+            list.map(l => l.next = null)
+        }
         return list
     }
 }
@@ -161,7 +164,13 @@ class Evaluate {
         let l = a.length
         for (i; i < l; i++) {        
             if (a[i] instanceof Array && b[i] instanceof Array) {
-                return this.compareArrays(a[i], b[i])
+                if(!this.compareArrays(a[i], b[i])) {
+                    results.push({
+                        reson: "NOT_EQUAL",
+                        a: a[i],
+                        b: b[i]
+                    }) 
+                }
             }           
             else if (a[i] != b[i]) { 
                 results.push({
@@ -182,7 +191,7 @@ class Evaluate {
        }) 
     }
 
-    createReason(reason, actual, expected) {
+    createReason(reason, expected, actual) {
         return {
             "reason": reason,
             "expected": expected,
@@ -196,7 +205,7 @@ class Evaluate {
             const parametersResult = this.compareArrays(e.expectedParameters, e.actualParameters)
             if (this.resultFilter === Evaluate.FAILED) {
                 if (!countResult) {
-                    this.addMessage(e.name, "method", createReason("Counts do not equal", e.expectedCount, e.actualCount))
+                    this.addMessage(e.name, "method", this.createReason("Counts do not equal", e.expectedCount, e.actualCount))
                 }
                 if (parametersResult.length > 0) {
                     parametersResult.forEach(r => this.addMessage(e.name, "parameters", this.createReason(r.reson, r.a, r.b)))
@@ -209,6 +218,7 @@ class Evaluate {
 
     log() {
         console.log(this.filter());
+        console.log(this.failedMessages)
     }
 }
 
@@ -221,9 +231,9 @@ const callHistory = new CallHistory()
 callHistory.call("methodName", [])
 callHistory.call("methodName", [])
 callHistory.call("otherMethod", [["x"]])
-callHistory.call("otherMethod", [["y"]])
+callHistory.call("otherMethod", ["y"])
 
-new Evaluate(expectations.match(callHistory)).passed().log()
+new Evaluate(expectations.match(callHistory)).failed().log()
 
 
 
