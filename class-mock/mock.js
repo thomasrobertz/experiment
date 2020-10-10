@@ -141,7 +141,7 @@ class Evaluate {
     constructor(expectations) {
         this.expectations = expectations.flatten()
         this.resultFilter = Evaluate.FAILED
-        this.failedMessages = []
+        this.failMessages = []
     }
 
     failed() {
@@ -154,44 +154,15 @@ class Evaluate {
         return this
     }
 
-    compareArrays(a, b) {
-        let results = []
-        if (!b) {
-            results.push({ reson: "NOT_AN_ARRAY" })
-            return results
-        }
-        let i = 0
-        let l = a.length
-        for (i; i < l; i++) {        
-            if (a[i] instanceof Array && b[i] instanceof Array) {
-                if(!this.compareArrays(a[i], b[i])) {
-                    results.push({
-                        reson: "NOT_EQUAL",
-                        a: a[i],
-                        b: b[i]
-                    }) 
-                }
-            }           
-            else if (a[i] != b[i]) { 
-                results.push({
-                    reson: "NOT_EQUAL",
-                    a: a[i],
-                    b: b[i]
-                })  
-            }           
-        }       
-        return results;
-    }
-
     addMessage(name, type, reason) {
-       this.failedMessages.push({ 
+       this.failMessages.push({ 
            "name": name,
            "type": type,
            "reason": reason
        }) 
     }
 
-    createReason(reason, expected, actual) {
+    static createReason(reason, expected, actual) {
         return {
             "reason": reason,
             "expected": expected,
@@ -202,13 +173,13 @@ class Evaluate {
     filter() {
         return this.expectations.filter(e => {
             const countResult = e.expectedCount === e.actualCount
-            const parametersResult = this.compareArrays(e.expectedParameters, e.actualParameters)
+            const parametersResult = this.arrayDiff(e.expectedParameters, e.actualParameters)            
             if (this.resultFilter === Evaluate.FAILED) {
                 if (!countResult) {
                     this.addMessage(e.name, "method", this.createReason("Counts do not equal", e.expectedCount, e.actualCount))
                 }
                 if (parametersResult.length > 0) {
-                    parametersResult.forEach(r => this.addMessage(e.name, "parameters", this.createReason(r.reson, r.a, r.b)))
+                    parametersResult.forEach(r => this.addMessage(e.name, "parameters", r))
                 }
                 return (!countResult) || (parametersResult.length > 0)
             }
@@ -217,8 +188,9 @@ class Evaluate {
     }
 
     log() {
-        console.log(this.filter());
-        console.log(this.failedMessages)
+        console.log("Count of " + this.resultFilter + ": " +  this.filter().length);
+        console.log("Fail messages count: " + this.failMessages.length);
+        console.log(this.failMessages)
     }
 }
 
@@ -231,7 +203,7 @@ const callHistory = new CallHistory()
 callHistory.call("methodName", [])
 callHistory.call("methodName", [])
 callHistory.call("otherMethod", [["x"]])
-callHistory.call("otherMethod", ["y"])
+callHistory.call("otherMethod", [["y", 4]])
 
 new Evaluate(expectations.match(callHistory)).failed().log()
 
