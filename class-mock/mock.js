@@ -16,7 +16,7 @@ const call = (expectedCount) => {
     }
 }
 
-const expectations = [
+const expectationsOrdered = [
     { 
         "name": "methodName", "expectation": call(1), status: "", next: {
         "name": "methodName", "expectation": call(1), status: "", next: {
@@ -30,8 +30,27 @@ const callHistory = [
     { name: "otherMethod", parameters: [] }
 ]
 
-Object.entries(expectations).forEach(expectation => {
-    
+const nextHistory = (name) => {
+    let match = null
+    let i = 0
+    for(i; i < callHistory.length; i++) {
+        let current = callHistory[i]
+        if(current.name === name) {
+            match = current
+            break;
+        }
+    }
+    if(match) {
+        callHistory.splice(i, 1)
+    }
+    return match
+}
+
+Object.entries(expectationsOrdered).forEach(expectation => {
+    let match = nextHistory(expectation[1].name)
+    if(match) {
+        
+    }
 })
 
 /*
@@ -56,7 +75,7 @@ Object.entries(expectations).forEach(expectation => {
 })  
 */
 
-console.log(expectations);
+//console.log(expectationsOrdered);
 
 
 
