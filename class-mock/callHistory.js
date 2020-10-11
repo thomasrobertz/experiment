@@ -1,15 +1,18 @@
 module.exports = class CallHistory {
     constructor() {
-        this.callHistory = []
+        this.clear()
     }
     call(name, parameters) {
+        if (parameters === undefined) {
+            parameters = []
+        }
         this.callHistory.push({
             "name": name, 
             "parameters": parameters
         })
     }
-    length() {
-        return this.callHistory.length
+    clear() {
+        this.callHistory = []
     }
     next(name) {
         let match = null
@@ -22,7 +25,7 @@ module.exports = class CallHistory {
             }
         }
         if(match) {
-            this.callHistory.splice(i, 1)            
+            this.callHistory.splice(i, 1)         
         }
         return match
     }        

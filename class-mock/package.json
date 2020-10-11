@@ -4,11 +4,15 @@
   "description": "Simple mocking tool for es classes",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Thomas Robertz",
   "license": "ISC",
   "dependencies": {
     "nearley": "^2.19.7"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.3"
   }
 }
