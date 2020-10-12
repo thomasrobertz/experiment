@@ -1,4 +1,5 @@
-require("./evaluate")
+var Evaluate = require('./evaluate')
+var evaluate = new Evaluate()
 
 /**
  * Based on solution in https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript?https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript?
@@ -15,14 +16,15 @@ module.exports = class Parameters {
 
 		let result = []
 
-		const bothArrays = a[i] instanceof Array && b[i] instanceof Array
-		const bothObjects = a[i] instanceof Object && b[i] instanceof Object			
-		const oneArray = a[i] instanceof Array || b[i] instanceof Array
-		const oneObject = a[i] instanceof Object || b[i] instanceof Object			
+		// TODO Refactor to method + class constants
+		const bothArrays = a instanceof Array && b instanceof Array
+		const bothObjects = (a instanceof Object && b instanceof Object)  && !bothArrays
+		const oneArray = (a instanceof Array || b instanceof Array) && !bothArrays
+		const oneObject = (a instanceof Object || b instanceof Object) && !oneArray && !bothArrays	&& !bothObjects
 		const bothPrimitives = !(bothArrays || bothObjects || oneArray || oneObject) 
 
 		if (bothPrimitives) {
-			if(!(a === b)) {
+			if(a !== b) {
 				result.push(Evaluate.createReason("PRIMITIVE_NOT_EQUAL", a, b))
 			}
 			return result
@@ -64,12 +66,12 @@ module.exports = class Parameters {
         for (let i = 0, l=a.length; i < l; i++) {
 
 			const bothArrays = a[i] instanceof Array && b[i] instanceof Array
-			const bothObjects = a[i] instanceof Object && b[i] instanceof Object			
-			const oneArray = a[i] instanceof Array || b[i] instanceof Array
-			const oneObject = a[i] instanceof Object || b[i] instanceof Object			
+			const bothObjects = (a[i] instanceof Object && b[i] instanceof Object)  && !bothArrays
+			const oneArray = (a[i] instanceof Array || b[i] instanceof Array) && !bothArrays
+			const oneObject = (a[i] instanceof Object || b[i] instanceof Object) && !oneArray && !bothArrays	&& !bothObjects
 			const bothPrimitives = !(bothArrays || bothObjects || oneArray || oneObject) 
 
-			if(oneArrays || oneObject) {
+			if(oneArray || oneObject) {
 				result.push(Evaluate.createReason("ARRAY_DIFFERENT_TYPES", a, b))
 				continue
 			}
@@ -91,8 +93,8 @@ module.exports = class Parameters {
 			}
 
 			if (bothPrimitives) {
-				if (a[i] != b[i]) { 
-					result.push(Evaluate.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a, b))   
+				if (a[i] !== b[i]) { 
+					result.push(Evaluate.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a, b, a[i], b[i]))   
 				}
 				continue
 			}
@@ -159,8 +161,8 @@ module.exports = class Parameters {
 			}
 
 			// If we reach this point there can only be two primitives left.
-			if(a[propertyName] != b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a, b, propertyName))
+			if(a[propertyName] !== b[propertyName]) {
+				result.push(Evaluate.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a[propertyName], b[propertyName], typeof(a), propertyName))
 			}			
 		}
 		return result

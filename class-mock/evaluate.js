@@ -6,7 +6,9 @@ module.exports = class Evaluate {
     static PASSED = "passed"
 
     constructor(expectations) {
-        this.expectations = expectations.flatten()
+        if (expectations) {
+            this.expectations = expectations.flatten()
+        }
         this.resultFilter = Evaluate.FAILED
 		this.failMessages = []
     }
@@ -29,12 +31,13 @@ module.exports = class Evaluate {
        }) 
     }
 
-    static createReason(reason, expected, actual, additional = "") {		
+    static createReason(reason, expected, actual, detailExpected = "", detailActual = "") {		
         return {
             "reason": reason,
             "expected": expected,
 			"actual": actual,
-			"additional": additional
+            "detailExpected": detailExpected,
+            "detailActual": detailActual 
 		}
     }
 
@@ -56,8 +59,8 @@ module.exports = class Evaluate {
     }
 
     log() {
+        console.log(this.failMessages)
         console.log("Count of " + this.resultFilter + ": " +  this.filter().length);
         console.log("Fail messages count: " + this.failMessages.length);
-        console.log(this.failMessages)
     }
 }

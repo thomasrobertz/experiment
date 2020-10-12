@@ -1,9 +1,3 @@
-const nearley = require("nearley");
-const grammar = require("./dsl/grammar.js")
-const parser = new nearley.Parser(
-    nearley.Grammar.fromCompiled(grammar))
-//console.log(parser.feed(">3 and <8").results)
-
 class Expectation {
 
     constructor(name, expectedCount, expectedParameters, next) {
