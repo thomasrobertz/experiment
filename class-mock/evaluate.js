@@ -31,13 +31,12 @@ module.exports = class Evaluate {
        }) 
     }
 
-    static createReason(reason, expected, actual, detailExpected = "", detailActual = "") {		
+    static createReason(reason, expected, actual, additional = "") {		
         return {
             "reason": reason,
             "expected": expected,
 			"actual": actual,
-            "detailExpected": detailExpected,
-            "detailActual": detailActual 
+            "additional": additional
 		}
     }
 

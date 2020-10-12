@@ -32,35 +32,69 @@ describe('Parameters', function () {
     }),
     
     it('should diff arrays', function() {
+
+      // Single element
       let result = Parameters.diff([5], [5])
       expect(result.length).to.equal(0)
 
       result = Parameters.diff([5], [6])[0]
       expect(result.reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL")
-      expect(result.detailExpected).to.equal(5) // deep equal! (Object / Array members)
-      expect(result.detailActual).to.equal(6)
+      expect(result.expected).to.equal(5)
+      expect(result.actual).to.equal(6)
       
-      result = Parameters.diff([5, 6], [6])[0]
-      expect(result.reason).to.equal("ARRAY_NOT_SAME_LENGTH")
-
       result = Parameters.diff([5], ["x"])[0]
       expect(result.reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL")
-      expect(result.detailExpected).to.equal(5)
-      expect(result.detailActual).to.equal("x")
+      expect(result.expected).to.equal(5)
+      expect(result.actual).to.equal("x")
 
+      // Many elements
       result = Parameters.diff([5, 6, "x"], [5, 6, "x"])
       expect(result.length).to.equal(0)
 
       result = Parameters.diff([5, 6, "x"], [5, 6, "y"])
       expect(result.length).to.equal(1)
-      expect(result[0].reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL")      
-      expect(result[0].expected).to.eql([5, 6, "x"])
-      expect(result[0].actual).to.eql([5, 6, "y"])       
-      expect(result[0].detailExpected).to.equal("x")
-      expect(result[0].detailActual).to.equal("y")      
+      expect(result[0].reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL")          
+      expect(result[0].expected).to.equal("x")
+      expect(result[0].actual).to.equal("y")      
 
+      // Many diffs
+      result = Parameters.diff([5, 6, "x"], [7, 6, "y"])
+      expect(result.length).to.equal(2)
+      expect(result[0].reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL") 
+      expect(result[1].reason).to.equal("ARRAY_ELEMENTS_NOT_EQUAL") 
+      expect(result[0].expected).to.equal(5)
+      expect(result[0].actual).to.equal(7) 
+      expect(result[1].expected).to.equal("x")
+      expect(result[1].actual).to.equal("y")      
+
+      // Length
       result = Parameters.diff([5, 6], [5, 6, "x"])
       expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("ARRAY_NOT_SAME_LENGTH")
+
+      result = Parameters.diff([5, 6], [6])[0]
+      expect(result.reason).to.equal("ARRAY_NOT_SAME_LENGTH")
+
+      result = Parameters.diff([[]], [[[]]])
+      expect(result.length).to.equal(1) 
+      expect(result[0].reason).to.equal("ARRAY_NOT_SAME_LENGTH")
+
+      // Nested
+      result = Parameters.diff([5, 6, "x", [2, "y"]], [5, 6, "x", [2, "y"]])
+      expect(result.length).to.equal(0)
+
+      result = Parameters.diff([5, 6, "x", [2, "z"]], [5, 6, "x", [2, "y"]])
+      expect(result.length).to.equal(1)      
+      expect(result[0].expected).to.equal("z")
+      expect(result[0].actual).to.equal("y")       
+
+      // Nested many diffs
+      result = Parameters.diff([5, 8, "x", [2, "z"]], [5, 6, "x", [2, "y"]])
+      expect(result.length).to.equal(2)      
+      expect(result[0].expected).to.equal(8)
+      expect(result[0].actual).to.equal(6)            
+      expect(result[1].expected).to.equal("z")
+      expect(result[1].actual).to.equal("y")      
 
       // Truthy and more
       expect(Parameters.diff([], []).length).to.equal(0)
@@ -77,8 +111,63 @@ describe('Parameters', function () {
     }),
 
     it('should diff objects', function() {
-      let result = Parameters.diff([5], [5])
+
+      // Simple
+      let result = Parameters.diff({"x": 5}, {"x": 5})
       expect(result.length).to.equal(0)
+
+      result = Parameters.diff({"x": 5}, {"x": 6})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTIES_NOT_EQUAL")      
+      expect(result[0].expected).to.equal(5)      
+      expect(result[0].actual).to.equal(6)
+      expect(result[0].additional).to.equal("x")  
+
+      result = Parameters.diff({"x": 5}, {"y": 5})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTY_NOT_EXISTS")      
+      expect(result[0].expected).to.equal("x")      
+      
+      result = Parameters.diff({"x": 5, "w": 8}, {"y": 5})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTY_NOT_EXISTS")      
+      expect(result[0].expected).to.equal("x")      
+
+      result = Parameters.diff({"x": 5, "w": 8}, {"x": 5})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTY_NOT_EXISTS")      
+      expect(result[0].expected).to.equal("w")
+
+      // Nested
+      result = Parameters.diff({"x": 5, "w": {"z": "7"}}, {"x": 5, "w": {"z": "7"}})
+      expect(result.length).to.equal(0)
+
+      result = Parameters.diff({"x": 5, "w": {"z": "u"}}, {"x": 5, "w": {"z": "7"}})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTIES_NOT_EQUAL")      
+      expect(result[0].expected).to.equal("u")      
+      expect(result[0].actual).to.equal("7")
+      expect(result[0].additional).to.equal("z")        
+
+      result = Parameters.diff({"x": 5, "w": {"z": "u"}}, {"x": 5, "w": {"b": "7"}})
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("OBJECT_PROPERTY_NOT_EXISTS")      
+      expect(result[0].expected).to.equal("z")              
+    }),
+
+    it('should diff mixed arrays and objects', function() {
+      
+      let result = Parameters.diff({"x": 5, "y": [{"a": 5}, {"b": [1, 2, 3]}]}, {"x": 5, "y": [{"a": 5}, {"b": [1, 2, 3]}]})
+      expect(result.length).to.equal(0)
+
+      result = Parameters.diff({"x": 5, "y": [{"a": 5}, {"b": [1, 2, 3]}]}, {"x": 5, "y": [{"a": 5}, {"b": [1, 5, 3]}]})
+      expect(result.length).to.equal(1)
+
+      result = Parameters.diff([5, {"a": "x"}], [5, {"a": "x"}])
+      expect(result.length).to.equal(0)      
+       
+      result = Parameters.diff([5, {"a": "y"}], [5, {"a": "x"}])
+      expect(result.length).to.equal(1)        
     }),
 
     it('should reject different types', function () {
@@ -87,6 +176,10 @@ describe('Parameters', function () {
       expect(result[0].reason).to.equal("PRIMITIVE_DIFFERENT_TYPES")
 
       result = Parameters.diff([5], "x")
+      expect(result.length).to.equal(1)
+      expect(result[0].reason).to.equal("PRIMITIVE_DIFFERENT_TYPES")
+
+      result = Parameters.diff({"x": 5}, 5)
       expect(result.length).to.equal(1)
       expect(result[0].reason).to.equal("PRIMITIVE_DIFFERENT_TYPES")
     })

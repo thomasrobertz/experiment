@@ -68,7 +68,7 @@ module.exports = class Parameters {
 			const bothArrays = a[i] instanceof Array && b[i] instanceof Array
 			const bothObjects = (a[i] instanceof Object && b[i] instanceof Object)  && !bothArrays
 			const oneArray = (a[i] instanceof Array || b[i] instanceof Array) && !bothArrays
-			const oneObject = (a[i] instanceof Object || b[i] instanceof Object) && !oneArray && !bothArrays	&& !bothObjects
+			const oneObject = (a[i] instanceof Object || b[i] instanceof Object) && !oneArray && !bothArrays && !bothObjects
 			const bothPrimitives = !(bothArrays || bothObjects || oneArray || oneObject) 
 
 			if(oneArray || oneObject) {
@@ -77,24 +77,21 @@ module.exports = class Parameters {
 			}
 
 			if(bothArrays) {
-				const arraysDiffResult = Parameters.arraysDiff(a[i], b[i], result)
-                if (arraysDiffResult.length > 0) {
-                    result.push(Evaluate.createReason("ARRAY_NOT_EQUAL", a, b))
-				}
+				Parameters.arraysDiff(a[i], b[i], result)
 				continue
 			}
 
 			if (bothObjects) {
 				const objectsDiffResult = Parameters.objectsDiff(a[i], b[i])
 				if (objectsDiffResult.length > 0) {
-					result.concat(objectsDiffResult)
+					result = result.concat(objectsDiffResult)
 				}
 				continue
 			}
 
 			if (bothPrimitives) {
 				if (a[i] !== b[i]) { 
-					result.push(Evaluate.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a, b, a[i], b[i]))   
+					result.push(Evaluate.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a[i], b[i]))   
 				}
 				continue
 			}
@@ -112,26 +109,26 @@ module.exports = class Parameters {
 	static objectsDiff(a, b, result = []) {
 		
 		// Check object a inherited types
-		for (propertyName in a) {
+		for (let propertyName in a) {
 			if (a.hasOwnProperty(propertyName) != b.hasOwnProperty(propertyName)) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", a, b, propertyName))
+				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
 				return result
 			}
 			else if (typeof a[propertyName] != typeof b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_DIFFERENT_TYPE", a, b, propertyName))
+				result.push(Evaluate.createReason("OBJECT_PROPERTY_DIFFERENT_TYPE", propertyName, typeof(a[propertyName])))
 				return result
 			}		
 		}
 
 		// Check object b types
-		for(propertyName in b) {
+		for(let propertyName in b) {
 
 			if (a.hasOwnProperty(propertyName) != b.hasOwnProperty(propertyName)) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", a, b, propertyName))
+				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
 				return result
 			}
 			else if (typeof a[propertyName] != typeof b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTIES_DIFFERENT_TYPES", a, b, propertyName))
+				result.push(Evaluate.createReason("OBJECT_PROPERTIES_DIFFERENT_TYPES", propertyName, typeof(a[propertyName])))
 				return result
 			}
 			
@@ -147,22 +144,19 @@ module.exports = class Parameters {
 			if (bothArrays) {
 				const arraysDiffResult = Parameters.arraysDiff(a[propertyName], b[propertyName])
 				if (arraysDiffResult.length > 0) {
-					result.concat(arraysDiffResult)
+					result = result.concat(arraysDiffResult)
 				}
 				continue
 			}
 
 			if (bothObjects) {
-				const objectsDiffResult = Parameters.objectsDiff(a[propertyName], b[propertyName], result)
-				if (objectsDiffResult.length > 0) {
-                    result.push(Evaluate.createReason("OBJECT_NOT_EQUAL", a, b))
-				}				
+				Parameters.objectsDiff(a[propertyName], b[propertyName], result)			
 				continue
 			}
 
 			// If we reach this point there can only be two primitives left.
 			if(a[propertyName] !== b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a[propertyName], b[propertyName], typeof(a), propertyName))
+				result.push(Evaluate.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a[propertyName], b[propertyName], propertyName))
 			}			
 		}
 		return result
