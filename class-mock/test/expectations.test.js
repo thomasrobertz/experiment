@@ -1,4 +1,5 @@
 var expect = require('chai').expect
+
 var Expectations = require('../expectations').Expectations
 var Expectation = require('../expectations').Expectation
 var callHistory = new (require('../callHistory'))()

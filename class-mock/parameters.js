@@ -1,11 +1,19 @@
-var Evaluate = require('./evaluate')
-var evaluate = new Evaluate()
-
 /**
  * Based on solution in https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript?https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript?
  */
 module.exports = class Parameters {
 
+	constructor() { }
+
+	static createReason(reason, expected, actual, additional = "") {		
+        return {
+            "reason": reason,
+            "expected": expected,
+			"actual": actual,
+            "additional": additional
+		}
+	}
+	
 	/**
 	 * Compares two parameters.
 	 * 
@@ -25,13 +33,13 @@ module.exports = class Parameters {
 
 		if (bothPrimitives) {
 			if(a !== b) {
-				result.push(Evaluate.createReason("PRIMITIVE_NOT_EQUAL", a, b))
+				result.push(Parameters.createReason("PRIMITIVE_NOT_EQUAL", a, b))
 			}
 			return result
 		}
 
 		if(oneArray || oneObject) {
-			result.push(Evaluate.createReason("PRIMITIVE_DIFFERENT_TYPES", a, b))
+			result.push(Parameters.createReason("PRIMITIVE_DIFFERENT_TYPES", a, b))
 			return result
 		}
 
@@ -54,12 +62,12 @@ module.exports = class Parameters {
 	static arraysDiff(a, b, result = []) {
 
         if (!b) {
-            result.push(Evaluate.createReason("ARRAY_NOT_ARRAY", a, b))
+            result.push(Parameters.createReason("ARRAY_NOT_ARRAY", a, b))
             return result
         }
 		
 		if (a.length != b.length) {
-            result.push(Evaluate.createReason("ARRAY_NOT_SAME_LENGTH", a, b))
+            result.push(Parameters.createReason("ARRAY_NOT_SAME_LENGTH", a, b))
             return result
 		}
 		
@@ -72,7 +80,7 @@ module.exports = class Parameters {
 			const bothPrimitives = !(bothArrays || bothObjects || oneArray || oneObject) 
 
 			if(oneArray || oneObject) {
-				result.push(Evaluate.createReason("ARRAY_DIFFERENT_TYPES", a, b))
+				result.push(Parameters.createReason("ARRAY_DIFFERENT_TYPES", a, b))
 				continue
 			}
 
@@ -91,7 +99,7 @@ module.exports = class Parameters {
 
 			if (bothPrimitives) {
 				if (a[i] !== b[i]) { 
-					result.push(Evaluate.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a[i], b[i]))   
+					result.push(Parameters.createReason("ARRAY_ELEMENTS_NOT_EQUAL", a[i], b[i]))   
 				}
 				continue
 			}
@@ -111,11 +119,11 @@ module.exports = class Parameters {
 		// Check object a inherited types
 		for (let propertyName in a) {
 			if (a.hasOwnProperty(propertyName) != b.hasOwnProperty(propertyName)) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
+				result.push(Parameters.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
 				return result
 			}
 			else if (typeof a[propertyName] != typeof b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_DIFFERENT_TYPE", propertyName, typeof(a[propertyName])))
+				result.push(Parameters.createReason("OBJECT_PROPERTY_DIFFERENT_TYPE", propertyName, typeof(a[propertyName])))
 				return result
 			}		
 		}
@@ -124,11 +132,11 @@ module.exports = class Parameters {
 		for(let propertyName in b) {
 
 			if (a.hasOwnProperty(propertyName) != b.hasOwnProperty(propertyName)) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
+				result.push(Parameters.createReason("OBJECT_PROPERTY_NOT_EXISTS", propertyName, ""))
 				return result
 			}
 			else if (typeof a[propertyName] != typeof b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTIES_DIFFERENT_TYPES", propertyName, typeof(a[propertyName])))
+				result.push(Parameters.createReason("OBJECT_PROPERTIES_DIFFERENT_TYPES", propertyName, typeof(a[propertyName])))
 				return result
 			}
 			
@@ -156,7 +164,7 @@ module.exports = class Parameters {
 
 			// If we reach this point there can only be two primitives left.
 			if(a[propertyName] !== b[propertyName]) {
-				result.push(Evaluate.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a[propertyName], b[propertyName], propertyName))
+				result.push(Parameters.createReason("OBJECT_PROPERTIES_NOT_EQUAL", a[propertyName], b[propertyName], propertyName))
 			}			
 		}
 		return result

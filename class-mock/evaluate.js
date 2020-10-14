@@ -1,4 +1,5 @@
-require("./parameters")
+var Parameters = require('./parameters')
+var parameters = new Parameters()
 
 module.exports = class Evaluate {
    
@@ -31,22 +32,13 @@ module.exports = class Evaluate {
        }) 
     }
 
-    static createReason(reason, expected, actual, additional = "") {		
-        return {
-            "reason": reason,
-            "expected": expected,
-			"actual": actual,
-            "additional": additional
-		}
-    }
-
     filter() {
         return this.expectations.filter(e => {
             const countResult = e.expectedCount === e.actualCount
             const parametersResult = Parameters.diff(e.expectedParameters, e.actualParameters)            
             if (this.resultFilter === Evaluate.FAILED) {
                 if (!countResult) {
-                    this.addMessage(e.name, "method", this.createReason("Counts do not equal", e.expectedCount, e.actualCount))
+                    this.addMessage(e.name, "method", Parameters.createReason("Counts do not equal", e.expectedCount, e.actualCount))
                 }
                 if (parametersResult.length > 0) {
                     parametersResult.forEach(r => this.addMessage(e.name, "parameters", r))
