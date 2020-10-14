@@ -5,17 +5,24 @@ module.exports = class CallHistory {
     }
 
     call(name, parameters) {
-        let call = {
+        this.callHistory.push({
+            "id": this.id,
             "name": name, 
             "parameters": parameters,
             "matched": false
-        }
-        this.callHistory.push(call)
-        this.copy.push(call)        
+        })
+        this.copy.push({
+            "id": this.id,            
+            "name": name, 
+            "parameters": parameters,
+            "matched": false
+        })        
+        this.id++
         return this
     }
 
     clear() {
+        this.id = 0
         this.callHistory = []
         this.copy = []
         return this
@@ -34,28 +41,22 @@ module.exports = class CallHistory {
      * Try to match the given name against the call history.
      * If a match is found, it's copy is marked as matched as well,
      * so it won't be found again in subsequent cycles.
-     * Auto resets the call history, so if the match is not found, 
-     * it can potentially cause an endless loop.
+     * Auto resets the call history.
      * 
      * @param {*} name 
      */
     match(name) {
         if (this.callHistory.length === 0) {
-            if (this.copy.length > 0) {
-                this.reset()
-            } else {
-                return null
-            }
+            this.reset()
         }
         let match = null
         let i = 0
         for(i; i < this.callHistory.length; i++) {
             let current = this.callHistory[i]
-            let currentCopy = this.copy[i]
             if(current.name === name && current.matched === false) {
                 match = current
                 // Mark the copy as matched.
-                currentCopy.matched = true
+                this.copy.filter(c => { return c.id === current.id })[0].matched = true
                 break;
             }
         }

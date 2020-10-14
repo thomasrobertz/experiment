@@ -116,19 +116,19 @@ describe('Expectations', function () {
       expect(matches[1].actualCount).to.equal(2)
       expect(matches[2].actualCount).to.equal(0)
       expect(matches[3].actualCount).to.equal(2)
-      expect(matches[4].actualCount).to.equal(2)                  
+      expect(matches[4].actualCount).to.equal(1)                  
       expect(matches[5].actualCount).to.equal(0)      
     }) 
     
     it('should match all calls even if the call order is different and there is a next expectation', function () {
 
-      /*
       const expectations = createExpectations(true) 
 
       callHistory.clear()
       callHistory.call("Method2").call("Method2") // only called twice
-      callHistory.call("Method4", 4).call("Method4", "y") // Method 3 not called
+      callHistory.call("Method4", 4).call("Method4", "y") // Method3 not called
       callHistory.call("Method1").call("Method1") // Not called first
+      callHistory.call("Method8") // Method6 and hence 7 not called
 
       const matches = expectations.match(callHistory)
 
@@ -138,7 +138,8 @@ describe('Expectations', function () {
       expect(matches[3].actualCount).to.equal(2)
       expect(matches[4].actualCount).to.equal(1)                  
       expect(matches[5].actualCount).to.equal(0)   
-      */   
+      expect(matches[6].actualCount).to.equal(0)   
+      expect(matches[7].actualCount).to.equal(1)               
     }) 
 
     it('should return even if there are no matches', function () {
@@ -183,7 +184,9 @@ describe('Expectations', function () {
       expect(matches[2].actualCount).to.equal(matches[2].expectedCount)
       expect(matches[4].actualCount).to.equal(matches[4].expectedCount)      
       expect(matches[5].actualCount).to.equal(matches[5].expectedCount)  
-      
+
+      expect(matches[2].actualParameters[0]).to.equal(matches[2].expectedParameters[0])
+
       expect(matches[3].actualParameters[0]).to.not.equal(matches[3].expectedParameters[0])
     })     
   })

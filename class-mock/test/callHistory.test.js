@@ -20,18 +20,33 @@ describe('History', function () {
     })     
   })
 
-  describe('next', function() {
+  describe('match', function() {
     it('should return method calls', function () {
-      const match = callHistory.next("testName2")
+      callHistory.call("testName2", 44)
+      const match = callHistory.match("testName2")
       expect(match.name).to.equal("testName2")
       expect(match.parameters).to.equal(44)
     })   
 
     it('should remove matched calls', function() {
+      callHistory.clear()
+      callHistory.call("testName1")
       expect(callHistory.callHistory.length).to.equal(1)
       expect(callHistory.callHistory[0]["name"]).to.equal("testName1")
       expect(callHistory.callHistory[0]["parameters"]).to.equal(undefined)         
     })
+
+    it('should autoreset', function() {
+      callHistory.clear()
+      callHistory.call("testName1")
+      callHistory.call("testName2")
+      callHistory.call("testName3")      
+      callHistory.match("testName1")
+      callHistory.match("testName2")
+      callHistory.match("testName3")                  
+      callHistory.match("X")         
+      expect(callHistory.callHistory.length).to.equal(0)       
+    })    
   })
 
   describe('clear', function() {
@@ -39,6 +54,7 @@ describe('History', function () {
       callHistory.call("justToBeSafe")
       callHistory.clear()
       expect(callHistory.callHistory.length).to.equal(0)
+      expect(callHistory.copy.length).to.equal(0)      
     })   
   })
 })
