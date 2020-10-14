@@ -29,7 +29,7 @@ describe('Parameters', function () {
       expect(Parameters.diff(undefined, undefined).length).to.equal(0)      
       expect(Parameters.diff(null, undefined).length).to.equal(1)         
       expect(Parameters.diff(null, 5).length).to.equal(1)   
-    }),
+    })
     
     it('should diff arrays', function() {
 
@@ -108,7 +108,7 @@ describe('Parameters', function () {
       expect(Parameters.diff([null], [null]).length).to.equal(0)
       expect(Parameters.diff([null], [undefined]).length).to.equal(1)      
       expect(Parameters.diff([null], [5]).length).to.equal(1)      
-    }),
+    })
 
     it('should diff objects', function() {
 
@@ -153,7 +153,7 @@ describe('Parameters', function () {
       expect(result.length).to.equal(1)
       expect(result[0].reason).to.equal("OBJECT_PROPERTY_NOT_EXISTS")      
       expect(result[0].expected).to.equal("z")              
-    }),
+    })
 
     it('should diff mixed arrays and objects', function() {
       
@@ -168,7 +168,7 @@ describe('Parameters', function () {
        
       result = Parameters.diff([5, {"a": "y"}], [5, {"a": "x"}])
       expect(result.length).to.equal(1)        
-    }),
+    })
 
     it('should reject different types', function () {
       let result = Parameters.diff([5], {"x": 5})

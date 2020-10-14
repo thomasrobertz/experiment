@@ -8,17 +8,17 @@ describe('History', function () {
       callHistory.call("testName1")
       expect(callHistory.callHistory.length).to.equal(1)
       expect(callHistory.callHistory[0]["name"]).to.equal("testName1")
-      expect(callHistory.callHistory[0]["parameters"].length).to.equal(0)      
+      expect(callHistory.callHistory[0]["parameters"]).to.equal(undefined)      
     })
     it('and parameters', function () {
       callHistory.call("testName2", 44)
       expect(callHistory.callHistory.length).to.equal(2)
       expect(callHistory.callHistory[0]["name"]).to.equal("testName1")
-      expect(callHistory.callHistory[0]["parameters"].length).to.equal(0)      
+      expect(callHistory.callHistory[0]["parameters"]).to.equal(undefined)      
       expect(callHistory.callHistory[1]["name"]).to.equal("testName2")
       expect(callHistory.callHistory[1]["parameters"]).to.equal(44)                  
     })     
-  }),
+  })
 
   describe('next', function() {
     it('should return method calls', function () {
@@ -30,7 +30,7 @@ describe('History', function () {
     it('should remove matched calls', function() {
       expect(callHistory.callHistory.length).to.equal(1)
       expect(callHistory.callHistory[0]["name"]).to.equal("testName1")
-      expect(callHistory.callHistory[0]["parameters"].length).to.equal(0)         
+      expect(callHistory.callHistory[0]["parameters"]).to.equal(undefined)         
     })
   })
 
