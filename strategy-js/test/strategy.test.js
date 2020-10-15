@@ -180,21 +180,20 @@ describe('Strategy', function () {
 		
 			expect(mixAll).to.throw()		  
 		})		
+	})	
 
-		describe('console', function () {
-			it('should log to the console', function () {
-				// TODO
-				/*
-				(function(){
-    				var logPointer = console.log;
-    				console.log = function (message) {
-        				logPointer.apply(console, arguments);
-					};
-				})();
-				*/
-				
-			})
+	describe('console', function () {
+		it('should log to the console', function () {
+			// TODO
+			/*
+			(function(){
+				var logPointer = console.log;
+				console.log = function (message) {
+					logPointer.apply(console, arguments);
+				};
+			})();
+			*/
+			
 		})
-
 	})	
 })
