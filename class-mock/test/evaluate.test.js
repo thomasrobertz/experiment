@@ -80,8 +80,6 @@ describe('Evaluate', function () {
 
       result = evaluate.passed().filter()
       expect(result.length).to.equal(2)
-
-      expect(result.length).to.equal(2)
     })   
   })  
 
