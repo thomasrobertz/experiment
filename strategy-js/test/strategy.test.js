@@ -119,7 +119,7 @@ describe('Strategy', function () {
 	describe('compose', function () {		
 
 		it('should invoke a callback and return a value from a composition', function () {
-			
+			// TODO
 		})
 
 		it('should throw on illegal composition', function () {
@@ -183,13 +183,15 @@ describe('Strategy', function () {
 
 		describe('console', function () {
 			it('should log to the console', function () {
-				
+				// TODO
+				/*
 				(function(){
     				var logPointer = console.log;
     				console.log = function (message) {
         				logPointer.apply(console, arguments);
 					};
 				})();
+				*/
 				
 			})
 		})
