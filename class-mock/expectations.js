@@ -118,9 +118,9 @@ class Expectations {
         return this.expectations
     }
 
-    flatten(disband = true) {
+    flatten(expectations, disband = true) {
         const list = []
-        this.expectations.forEach(e => {
+        expectations.forEach(e => {
             list.push(e)      
             let next = e.next
             while(next) {

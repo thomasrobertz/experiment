@@ -7,9 +7,7 @@ module.exports = class Evaluate {
     static PASSED = "passed"
 
     constructor(expectations) {
-        if (expectations) {
-            this.expectations = expectations.flatten()
-        }
+        this.expectations = expectations
         this.resultFilter = Evaluate.FAILED
 		this.failMessages = []
     }

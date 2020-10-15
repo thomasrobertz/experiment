@@ -47,17 +47,42 @@ function standardCall(withNext = false) {
 
 describe('Evaluate', function () {
   
-  describe('success', function () {
-    it('should calculate all correct expectations', function () {
+  describe('pass', function () {
+    it('should calculate expectations when all calls are correct', function () {
+
       const expectations = createExpectations() 
       standardCall()
 
-      const evaluate = new Evaluate(expectations)
+      const evaluate = new Evaluate(expectations.match(callHistory))
 
-      const result = evaluate.filter()
+      let result = evaluate.filter()
+      expect(result.length).to.equal(0)
 
+      result = evaluate.passed().filter()
       expect(result.length).to.equal(6)
     })   
   })
+
+  describe('partial', function () {
+    it('should calculate failed expectations', function () {
+
+      const expectations = createExpectations() 
+      
+      callHistory.clear()
+      callHistory.call("Method2").call("Method2") // only called twice
+      callHistory.call("Method4", 4).call("Method4", "y") // Method 3 not called
+      callHistory.call("Method1").call("Method1") // Not called first
+
+      const evaluate = new Evaluate(expectations.match(callHistory))
+
+      let result = evaluate.filter()
+      expect(result.length).to.equal(4)
+
+      result = evaluate.passed().filter()
+      expect(result.length).to.equal(2)
+
+      expect(result.length).to.equal(2)
+    })   
+  })  
 
 })
