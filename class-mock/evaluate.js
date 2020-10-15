@@ -21,7 +21,7 @@ module.exports = class Evaluate {
         this.resultFilter = Evaluate.PASSED
         return this
     }
-
+    
     addMessage(name, type, reason) {
        this.failMessages.push({ 
            "name": name,
@@ -30,7 +30,10 @@ module.exports = class Evaluate {
        }) 
     }
 
-    filter() {
+    filter(resultFilter) {
+        if (resultFilter === undefined) {
+            resultFilter = this.resultFilter
+        }
         return this.expectations.filter(e => {
             const countResult = e.expectedCount === e.actualCount
             const parametersResult = Parameters.diff(e.expectedParameters, e.actualParameters)            

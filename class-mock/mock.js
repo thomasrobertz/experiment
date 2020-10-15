@@ -1,13 +1,15 @@
 var CallHistory = require('./callHistory')
+var Evaluate = require('./evaluate')
 
 /**
  * The main mocking class, uses a proxy to intercept and log calls to the target.
  */
 module.exports = class Mock {
 
-	constructor(classToMock) {
+	constructor(classToMock, epexctations = null) {
 		
 		this.callHistory = new CallHistory()
+		this.expectations = epexctations
 
         // Rebind this
         let self = this
@@ -28,5 +30,17 @@ module.exports = class Mock {
 			}
 		}
 		return new Proxy(classToMock, handler);
+	}
+
+	static of(classToMock) {
+		return new Mock(classToMock)
+	}
+
+	getCallHistoryByNumber(index) {
+		return this.callHistory.callHistory[index]
+	}
+
+	evaluate(filter) {
+		return new Evaluate(this.expectations).filter(filter)	
 	}
 }
