@@ -44,7 +44,7 @@ class TestClass {
 			Strategy.callback(composedCallbackFunctionMock), 
 			Strategy.returnStrict("TEST"))
 
-		//this.consoleStrategy = 
+		this.logToConsoleStrategy = Strategy.logToConsole()
 	}
 	testIgnore() {
 		return this.ignoreStrategy()
@@ -73,6 +73,9 @@ class TestClass {
 	testComposedStrategy(message) {
 		return this.composedStrategy(message)
 	}
+	testLogToConsole(message) {
+		return this.logToConsoleStrategy(message)
+	}	
 }
 
 var testClass = new TestClass()
@@ -131,6 +134,10 @@ describe('Strategy', function () {
 	describe('compose', function () {		
 
 		it('should log, invoke a callback and return a value from a composition', function () {			
+
+			// Strategy was called before, reset calls.
+			logMock.clearCallHistory();
+
 			const returnValue = testClass.testComposedStrategy("TEST")
 			expect(returnValue).to.equal('TEST')
 
@@ -206,16 +213,14 @@ describe('Strategy', function () {
 
 	describe('console', function () {
 		it('should log to the console', function () {
-			// TODO
-			/*
-			(function(){
-				var logPointer = console.log;
-				console.log = function (message) {
-					logPointer.apply(console, arguments);
-				};
-			})();
-			*/
-			
+			let messages = ""
+			var logPointer = console.log;
+			console.log = function (message) {
+				messages += message
+				logPointer.apply(console, arguments);
+			}
+			testClass.testLogToConsole("TEST 123")
+			expect(messages).to.equal("TEST 123")
 		})
 	})	
 })
