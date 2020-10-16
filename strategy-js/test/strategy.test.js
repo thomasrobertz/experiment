@@ -27,7 +27,7 @@ class TestClass {
 		this.errorStrategy = Strategy.error()
 		this.loggerStrategy = Strategy.log(logMock)
 		this.returnStrategy = Strategy.returnValue(5)		
-		this.returnStrategyStrict = Strategy.returnStrict(true)	
+		this.returnStrategyFixed = Strategy.returnFixed(true)	
 		this.callbackStrategy = Strategy.callback(callbackFunctionMock)		
 		this.returningCallbackStrategy = Strategy.returningCallback(function (message) { 
 			if(message === undefined) {
@@ -42,7 +42,7 @@ class TestClass {
 		this.composedStrategy = Strategy.compose(
 			this.loggerStrategy, 
 			Strategy.callback(composedCallbackFunctionMock), 
-			Strategy.returnStrict("TEST"))
+			Strategy.returnFixed("TEST"))
 
 		this.logToConsoleStrategy = Strategy.logToConsole()
 	}
@@ -55,8 +55,8 @@ class TestClass {
 	testReturn(what) {
 		return this.returnStrategy(what)
 	}	
-	testReturnStrict() {
-		return this.returnStrategyStrict()
+	testReturnFixed() {
+		return this.returnStrategyFixed()
 	}		
 	testCallback(message) {
 		return this.callbackStrategy(message)		
@@ -161,8 +161,8 @@ describe('Strategy', function () {
 			function moreThanOneReturnValue() {
 				Strategy.compose(Strategy.returnValue(), Strategy.returnValue())
 			}
-			function moreThanOneReturnStrict() {
-				Strategy.compose(Strategy.returnStrict(), Strategy.returnStrict())
+			function moreThanOneReturnFixed() {
+				Strategy.compose(Strategy.returnFixed(), Strategy.returnFixed())
 			}	
 			function moreThanOneReturningCallback() {
 				Strategy.compose(Strategy.returningCallback(), Strategy.returningCallback())
@@ -171,41 +171,41 @@ describe('Strategy', function () {
 			function mixErrorAndReturnValue() {
 				Strategy.compose(Strategy.error(), Strategy.returnValue())
 			}		
-			function mixErrorAndReturnStrict() {
-				Strategy.compose(Strategy.error(), Strategy.returnStrict())
+			function mixErrorAndreturnFixed() {
+				Strategy.compose(Strategy.error(), Strategy.returnFixed())
 			}	
 			function mixErrorAndReturningCallback() {
 				Strategy.compose(Strategy.error(), Strategy.returningCallback())
 			}			
 		
-			function mixReturnValueAndReturnStrict() {
-				Strategy.compose(Strategy.returnValue(), Strategy.returnStrict())
+			function mixReturnValueAndreturnFixed() {
+				Strategy.compose(Strategy.returnValue(), Strategy.returnFixed())
 			}		
 			function mixReturnValueAndReturnCallback() {
 				Strategy.compose(Strategy.returnValue(), Strategy.returningCallback())
 			}	
 		
-			function mixReturnStrictAndReturnCallback() {
-				Strategy.compose(Strategy.returnStrict(), Strategy.returningCallback())
+			function mixReturnFixedAndReturnCallback() {
+				Strategy.compose(Strategy.returnFixed(), Strategy.returningCallback())
 			}
 		
 			function mixAll() {
-				Strategy.compose(Strategy.error(), Strategy.returnValue(), Strategy.returnStrict(), Strategy.returningCallback())
+				Strategy.compose(Strategy.error(), Strategy.returnValue(), Strategy.returnFixed(), Strategy.returningCallback())
 			}
 			
 			expect(moreThanOneError).to.throw()
 			expect(moreThanOneReturnValue).to.throw()
-			expect(moreThanOneReturnStrict).to.throw()
+			expect(moreThanOneReturnFixed).to.throw()
 			expect(moreThanOneReturningCallback).to.throw()			
 		
 			expect(mixErrorAndReturnValue).to.throw()			
-			expect(mixErrorAndReturnStrict).to.throw()			
+			expect(mixErrorAndreturnFixed).to.throw()			
 			expect(mixErrorAndReturningCallback).to.throw()			
 		
-			expect(mixReturnValueAndReturnStrict).to.throw()	
+			expect(mixReturnValueAndreturnFixed).to.throw()	
 			expect(mixReturnValueAndReturnCallback).to.throw()			
 		
-			expect(mixReturnStrictAndReturnCallback).to.throw()			
+			expect(mixReturnFixedAndReturnCallback).to.throw()			
 		
 			expect(mixAll).to.throw()		  
 		})		

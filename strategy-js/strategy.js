@@ -38,6 +38,18 @@ module.exports = class Strategy {
 	}
 
 	/**
+	 * Returns an error strategy with a fixed message.
+	 * 
+	 * @param {*} message 
+	 */
+	static errorFixed(message) {	 
+		const error = () => {
+			throw new Error(message)	
+		}			
+		return error		
+	}
+
+	/**
 	 * Returns a logger strategy.
 	 * 
 	 * @param {*} logger 
@@ -71,11 +83,11 @@ module.exports = class Strategy {
 	 * 
 	 * @param {*} what 
 	 */
-	static returnStrict(what) { 
-		const returnStrict = () => {			
+	static returnFixed(what) { 
+		const returnFixed = () => {			
 			return what
 		}
-		return returnStrict		
+		return returnFixed		
 	}	
 
 	/**
@@ -147,7 +159,7 @@ module.exports = class Strategy {
 	static compose(...strategies) { 
 
 		const errorCount = strategies.filter(s => s.name === "error").length
-		const returnValueCount = strategies.filter(s => s.name === "returnValue" || s.name === "returnStrict").length		
+		const returnValueCount = strategies.filter(s => s.name === "returnValue" || s.name === "returnFixed").length		
 		const returningCallbackCount = strategies.filter(s => s.name === "returningCallback").length		
 
 		if(errorCount > 1) {
@@ -155,7 +167,7 @@ module.exports = class Strategy {
 		}
 
 		if(returnValueCount > 1) {
-			throw new Error("Can only have one returnValue/returnStrict strategy.")
+			throw new Error("Can only have one returnValue/returnFixed strategy.")
 		}
 
 		if(returningCallbackCount > 1) {
@@ -165,7 +177,7 @@ module.exports = class Strategy {
 		if(((errorCount + returnValueCount) > 1) ||
 			((errorCount + returningCallbackCount) > 1) || 
 			((returnValueCount + returningCallbackCount) > 1)) {
-			throw new Error("Can only have one of error, returnValue, returnStrict, or returningCallback strategies.")	 
+			throw new Error("Can only have one of error, returnValue, returnFixed, or returningCallback strategies.")	 
 		}
 
 		const compose = (message) => {
@@ -179,7 +191,7 @@ module.exports = class Strategy {
 						errorStrategy = strategy
 						break
 					case "returnValue":
-					case "returnStrict":						
+					case "returnFixed":						
 						// If there is a return value, capture it.
 						returnValue = strategy(message)										
 						break
