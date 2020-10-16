@@ -1,7 +1,7 @@
 const expect = require('chai').expect
+const assert = require('chai').assert
 const Strategy = require('../strategy')
 var Mock = require('../class-mock/mock')
-const { assert } = require('chai')
 
 class Logger {
 	log(message) {
@@ -13,8 +13,13 @@ function callbackFunction(args) {
 	args
 }
 
+function callbackFunctionComposed(args) {
+	args
+}
+
 var logMock = new Mock(Logger)
 var callbackFunctionMock = new Mock(callbackFunction)
+var composedCallbackFunctionMock = new Mock(callbackFunctionComposed)
 
 class TestClass {
 	constructor() {
@@ -34,7 +39,11 @@ class TestClass {
 			"error": Strategy.error(), 
 			"return": Strategy.returnValue("returnedValue")  
 		})
-		//this.composedStrategy =
+		this.composedStrategy = Strategy.compose(
+			this.loggerStrategy, 
+			Strategy.callback(composedCallbackFunctionMock), 
+			Strategy.returnStrict("TEST"))
+
 		//this.consoleStrategy = 
 	}
 	testIgnore() {
@@ -61,6 +70,9 @@ class TestClass {
 	testDictionaryStrategyReturn() {
 		return this.dictionaryStrategy.run("return")
 	}	
+	testComposedStrategy(message) {
+		return this.composedStrategy(message)
+	}
 }
 
 var testClass = new TestClass()
@@ -118,8 +130,18 @@ describe('Strategy', function () {
 
 	describe('compose', function () {		
 
-		it('should invoke a callback and return a value from a composition', function () {
-			// TODO
+		it('should log, invoke a callback and return a value from a composition', function () {			
+			const returnValue = testClass.testComposedStrategy("TEST")
+			expect(returnValue).to.equal('TEST')
+
+			expect(logMock.getCallHistory().length).to.equal(1)
+			let history = logMock.getCallHistoryNumber(0)
+			expect(history["name"]).to.equal("log")	
+		  	expect(history["parameters"]).to.eql(["TEST"])	
+
+			history = composedCallbackFunctionMock.mock.getCallHistoryNumber(0)
+			expect(history["name"]).to.equal("callbackFunctionComposed")	
+		  	expect(history["parameters"]).to.eql(["TEST"])	
 		})
 
 		it('should throw on illegal composition', function () {
