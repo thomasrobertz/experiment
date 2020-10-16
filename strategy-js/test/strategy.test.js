@@ -25,6 +25,7 @@ class TestClass {
 	constructor() {
 		this.ignoreStrategy = Strategy.ignore()
 		this.errorStrategy = Strategy.error()
+		this.errorFixedStrategy = Strategy.errorFixed("FixedError")
 		this.loggerStrategy = Strategy.log(logMock)
 		this.returnStrategy = Strategy.returnValue(5)		
 		this.returnStrategyFixed = Strategy.returnFixed(true)	
@@ -89,12 +90,19 @@ describe('Strategy', function () {
 		})
 	})
 
-	describe('throw', function () {
+	describe('error', function () {
 	  it('should throw an error', function () {
 		// Explicitly call errorStrategy as a function on testClass by binding
 		expect(testClass.errorStrategy.bind(testClass)).to.throw(Error)	
 	  })
 	})
+
+	describe('errorFixed', function () {
+		it('should throw an error', function () {
+		  // Explicitly call errorStrategy as a function on testClass by binding
+		  expect(testClass.errorFixedStrategy.bind(testClass)).to.throw(Error)	
+		})
+	  })
 
 	describe('log', function () {
 		it('should log a message', function () {
