@@ -5,7 +5,6 @@ module.exports = class Strategy {
 	}
 
 	/**
-	 * Dictionary strategy.
 	 * Runs a strategy by key.
 	 * 
 	 * @param {*} key 
@@ -21,7 +20,7 @@ module.exports = class Strategy {
 	}
 
 	/**
-	 * Return an error strategy.
+	 * Returns an error strategy.
 	 * 
 	 * @param {*} message 
 	 */
@@ -51,7 +50,7 @@ module.exports = class Strategy {
 	}
 
 	/**
-	 * Return a strategy that can return a value.
+	 * Returns a strategy that can return a value.
 	 * The caller can pass the value.
 	 * 
 	 * @param {*} what 
@@ -67,7 +66,7 @@ module.exports = class Strategy {
 	}
 
 	/**
-	 * Return a strategy that always returns the same value.
+	 * Returns a strategy that always returns the same value.
 	 * The value returned is the one that is passed here on creation.
 	 * 
 	 * @param {*} what 
