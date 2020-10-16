@@ -61,6 +61,11 @@ module.exports = class Mock {
 		return this.callHistory.callHistory
 	}
 
+	clearCallHistory() {
+		this.callHistory.clear()
+		return this
+	}
+
 	getCallHistoryNumber(index) {
 		return this.callHistory.callHistory[index]
 	}
