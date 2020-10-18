@@ -1,0 +1,20 @@
+{
+  "name": "path-tools",
+  "version": "1.0.0",
+  "description": "List, Copy, Move, Delete and Zip",
+  "main": "path.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "filesystem"
+  ],
+  "author": "Thomas Robertz",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^5.0.2",
+    "fs-extra": "^9.0.1",
+    "is-valid-path": "^0.1.1",
+    "sanitize-filename": "^1.6.3"
+  }
+}
