@@ -50,6 +50,16 @@ class PathTools {
 		}		
 	}
 	
+	pushToResult(target, itemType, current, depth) {
+		target.push(
+			{ 
+				"type": itemType,
+				"name": current,
+				"depth": depth					
+			}
+		)
+	}
+
 	list(path = "", fileTypesToScan = this.fileTypes, result = {}, depth = 0) {
 
 		if (path === "") {
@@ -89,6 +99,8 @@ class PathTools {
 						itemType = PathTools.Directory
 					}
 				}
+				this.pushToResult(result[path], itemType, current, depth)
+				/*
 				result[path].push(
 					{ 
 						"type": itemType,
@@ -96,6 +108,7 @@ class PathTools {
 						"depth": depth					
 					}
 				)
+				*/
 			}) 
 		}
 						
@@ -136,13 +149,7 @@ class PathTools {
 									itemType = PathTools.Directory
 								}
 							}
-							result[subdirectory].push(
-								{ 
-									"type": itemType,
-									"name": f,
-									"depth": depth					
-								}
-							)
+							this.pushToResult(result[subdirectory], itemType, f, depth)
 						}) 
 					}
 				}
