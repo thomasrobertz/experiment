@@ -60,6 +60,27 @@ class PathTools {
 		)
 	}
 
+	resultBasedOnFieltypesToScan () {
+		let currentResult
+		switch(fileTypesToScan) {
+			case PathTools.File:
+				currentResult = fse.readdirSync(path, { withFileTypes: true })
+					.filter(i => i.isFile())		
+					.map(item => item.name)	
+				break;
+			case PathTools.Directory:
+				currentResult = fse.readdirSync(path, { withFileTypes: true })
+					.filter(i => i.isDirectory())		
+					.map(item => item.name)	
+				break;
+			case PathTools.Both:
+				currentResult = fse.readdirSync(path, { withFileTypes: true })
+					.map(item => item.name)	
+				break;				
+		}
+		return currentResult
+	}
+
 	list(path = "", fileTypesToScan = this.fileTypes, result = {}, depth = 0) {
 
 		if (path === "") {
@@ -100,15 +121,6 @@ class PathTools {
 					}
 				}
 				this.pushToResult(result[path], itemType, current, depth)
-				/*
-				result[path].push(
-					{ 
-						"type": itemType,
-						"name": current,
-						"depth": depth					
-					}
-				)
-				*/
 			}) 
 		}
 						
