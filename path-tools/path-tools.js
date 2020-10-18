@@ -8,24 +8,17 @@ class PathTools {
 	static File = "file"
 	static Both = "both"
 
-	constructor(path = "", isNotFileStrategy = null) {
+	constructor(path = "") {
 		
 		if (path === "") {
 			path = "./"
 		}
 
-		if(isNotFileStrategy === null) {		
-			isNotFileStrategy = Strategy.error();			
-		}						
-
 		this.validation = new Validation(path)
 		this.path = this.validation.path
 
-		this.isNotFileStrategy = isNotFileStrategy			
 		this.fileTypes = PathTools.File	
 		this.isRecursive = false
-
-		this.isNotAFileTemplate = `Path '${path}' is not a file.`		
 
 		// Results
 		this.listResult = []
