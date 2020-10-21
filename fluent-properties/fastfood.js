@@ -1,3 +1,6 @@
+/**
+ * Just a simple example of using getter properties within fluent interfaces.
+ */
 class FastFood {
 
 	constructor() {
