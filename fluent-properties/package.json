@@ -1,0 +1,16 @@
+{
+  "name": "fluent-properties",
+  "version": "1.0.0",
+  "description": "Using class properties in fluent interfaces",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "fluent",
+    "interface",
+    "javascript"
+  ],
+  "author": "Thomas Robertz",
+  "license": "ISC"
+}
