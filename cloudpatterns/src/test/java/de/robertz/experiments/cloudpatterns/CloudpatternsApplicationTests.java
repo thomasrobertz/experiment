@@ -1,4 +1,4 @@
-package de.robertz.toys.cloudpatterns;
+package de.robertz.experiments.cloudpatterns;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package de.robertz.toys.cloudpatterns;
+package de.robertz.experiments.cloudpatterns;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
